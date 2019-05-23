@@ -49,8 +49,6 @@ public class PulseGunController : MonoBehaviour
 
 	private void Track()
 	{
-		Debug.Log("Tracking");
-
 		Ray ray = new Ray(transform.position, transform.forward);
 		if (Physics.Raycast(ray, out RaycastHit hitInfo, tractorBeamDistance, LayerMask.GetMask("Object"), QueryTriggerInteraction.Ignore))
 		{
@@ -73,8 +71,6 @@ public class PulseGunController : MonoBehaviour
 
 	private void Shoot()
 	{
-		Debug.Log("Shot!!!");
-
 		projectile.transform.SetParent(projectileParent, true);
 		projectile.isKinematic = false;
 		projectile.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -113,6 +109,7 @@ public class PulseGunController : MonoBehaviour
 		}
 	}
 
+	// TODO : Rename the "Wait" function to something more appropriate, or switch to a state-driven-machine with delays in between statechanges!
 	IEnumerator Wait()
 	{
 		wait = true;
