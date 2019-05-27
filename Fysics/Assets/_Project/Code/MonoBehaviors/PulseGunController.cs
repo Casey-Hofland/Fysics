@@ -4,27 +4,40 @@ using UnityEngine;
 
 public class PulseGunController : MonoBehaviour
 {
+	// TODO : Rename some of these fields for clarity
 	[SerializeField] private float tractorBeamDistance = 2f;
+	[SerializeField] private float projectileDistanceFromPlayer = 2f; // TODO : find the distance from the player on track.
 	[SerializeField] private Vector3 shootForce = Vector3.zero;
+	[SerializeField] private Vector3 shootTorque = Vector3.zero;
 
 	[Header("ContinuesDynamic References Settings")]
 	[SerializeField] [Range(1, 100)] private float maxVelocity = 30f;
 	[SerializeField] [Range(0, 128)] private int maxCapacity = 24;
 	//[SerializeField] [Range(0, 300f)] private float maxTime = 60f;
 
+	private Ray forwardRay { get { return new Ray(transform.position, transform.forward); } }
 	private float sqrMaxVelocity;
-
-	// TODO : store references of each shot projectile, and reset their collisionDetectionMode to Discrete when their velocity reaches below a certain speed.
 	private List<Rigidbody> continuesReferences = new List<Rigidbody>();
-
-	[Header("! For Testing Only !")]
-	[SerializeField] private Vector3 shootTorque = Vector3.zero;
-
-	private Rigidbody projectile;
-	private Transform projectileParent;
+	private Projectile projectile = null;
 
 	private bool wait = false; // Used for testing waiting between shooting and tracking
 	private float waitDelay = 0.5f;
+
+	private class Projectile
+	{
+		public readonly Rigidbody rigidbody;
+		public readonly Quaternion rotation;
+		public readonly float drag;
+		public readonly float angularDrag;
+
+		public Projectile(Transform gunTransform, Rigidbody rigidbody)
+		{
+			this.rigidbody = rigidbody;
+			this.rotation = Quaternion.Inverse(gunTransform.rotation) * rigidbody.transform.rotation;
+			this.drag = rigidbody.drag;
+			this.angularDrag = rigidbody.angularDrag;
+		}
+	}
 
 	private void Awake()
 	{
@@ -47,42 +60,59 @@ public class PulseGunController : MonoBehaviour
 		}
 	}
 
+	// TODO : Find out which update MoveProjectiles should be in and what collision mode it should have.
+	private void FixedUpdate()
+	{
+		MoveProjectile();
+	}
+
+	// TODO : Track projectiles across surfaces. Currently, if the player has a projectile, looks at a surface and turns, the moveposition is ignored because of the raycast.
+	private void MoveProjectile()
+	{
+		if (projectile == null) return;
+
+		Debug.Log("Moving");
+
+		if (!Physics.Raycast(forwardRay, projectileDistanceFromPlayer, LayerMask.GetMask("Surface"), QueryTriggerInteraction.Ignore))
+		{
+			Vector3 projPos = transform.position + transform.forward * projectileDistanceFromPlayer;
+			projectile.rigidbody.MovePosition(projPos);
+		}
+
+		Quaternion projRot = Quaternion.LookRotation(projectile.rigidbody.position - transform.position) * projectile.rotation;
+		projectile.rigidbody.MoveRotation(projRot);
+	}
+
 	private void Track()
 	{
-		Ray ray = new Ray(transform.position, transform.forward);
-		if (Physics.Raycast(ray, out RaycastHit hitInfo, tractorBeamDistance, LayerMask.GetMask("Object"), QueryTriggerInteraction.Ignore))
+		if (projectile != null) return;
+
+		if (Physics.Raycast(forwardRay, out RaycastHit hitInfo, tractorBeamDistance, LayerMask.GetMask("Object"), QueryTriggerInteraction.Ignore))
 		{
-			projectile = hitInfo.transform.GetComponent<Rigidbody>();
+			Rigidbody rigidbody = hitInfo.transform.GetComponent<Rigidbody>();
 
-			if (projectile)
-			{
-				projectileParent = projectile.transform.parent;
+			projectile = new Projectile(transform, rigidbody);
 
-				projectile.transform.SetParent(transform, true);
-				projectile.isKinematic = true;
+			projectile.rigidbody.drag = Mathf.Infinity;
+			projectile.rigidbody.angularDrag = Mathf.Infinity;
 
-				projectile.transform.localPosition = new Vector3(0, 0, 1.5f);
-				projectile.transform.localRotation = Quaternion.identity;
-
-				StartCoroutine(Wait());
-			}
+			StartCoroutine(Wait());
 		}
 	}
 
 	private void Shoot()
 	{
-		projectile.transform.SetParent(projectileParent, true);
-		projectile.isKinematic = false;
-		projectile.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-		projectile.AddRelativeForce(shootForce, ForceMode.Impulse);
+		if (projectile == null) return;
 
-#if UNITY_EDITOR
-		projectile.AddRelativeTorque(shootTorque, ForceMode.Impulse);
-#endif
+		projectile.rigidbody.drag = projectile.drag;
+		projectile.rigidbody.angularDrag = projectile.angularDrag;
+		projectile.rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
-		continuesReferences.Add(projectile);
+		projectile.rigidbody.AddRelativeForce(shootForce, ForceMode.Impulse);
+		projectile.rigidbody.AddRelativeTorque(shootTorque, ForceMode.Impulse);
+
+		continuesReferences.Add(projectile.rigidbody);
 		projectile = null;
-		projectileParent = null;
 
 		StartCoroutine(Wait());
 	}
