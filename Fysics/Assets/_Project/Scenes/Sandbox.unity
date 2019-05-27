@@ -4262,7 +4262,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tractorBeamDistance: 2
-  shootForce: {x: 0, y: 0, z: 0}
+  projectileDistanceFromPlayer: 2
+  shootForce: 100
   shootTorque: {x: 0, y: 0, z: 0}
   maxVelocity: 30
   maxCapacity: 24

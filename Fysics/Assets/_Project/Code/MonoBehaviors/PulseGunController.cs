@@ -7,7 +7,7 @@ public class PulseGunController : MonoBehaviour
 	// TODO : Rename some of these fields for clarity
 	[SerializeField] private float tractorBeamDistance = 2f;
 	[SerializeField] private float projectileDistanceFromPlayer = 2f; // TODO : find the distance from the player on track.
-	[SerializeField] private Vector3 shootForce = Vector3.zero;
+	[SerializeField] private float shootForce = 0;
 	[SerializeField] private Vector3 shootTorque = Vector3.zero;
 
 	[Header("ContinuesDynamic References Settings")]
@@ -30,12 +30,18 @@ public class PulseGunController : MonoBehaviour
 		public readonly float drag;
 		public readonly float angularDrag;
 
+		private readonly Transform gunTransform;
+
+		public Vector3 direction { get { return (rigidbody.position - gunTransform.position); } }
+
 		public Projectile(Transform gunTransform, Rigidbody rigidbody)
 		{
 			this.rigidbody = rigidbody;
 			this.rotation = Quaternion.Inverse(gunTransform.rotation) * rigidbody.transform.rotation;
 			this.drag = rigidbody.drag;
 			this.angularDrag = rigidbody.angularDrag;
+
+			this.gunTransform = gunTransform;
 		}
 	}
 
@@ -75,15 +81,13 @@ public class PulseGunController : MonoBehaviour
 	{
 		if (projectile == null) return;
 
-		Debug.Log("Moving");
-
 		if (!Physics.Raycast(forwardRay, projectileDistanceFromPlayer, LayerMask.GetMask("Surface"), QueryTriggerInteraction.Ignore))
 		{
 			Vector3 projPos = transform.position + transform.forward * projectileDistanceFromPlayer;
 			projectile.rigidbody.MovePosition(projPos);
 		}
 
-		Quaternion projRot = Quaternion.LookRotation(projectile.rigidbody.position - transform.position) * projectile.rotation;
+		Quaternion projRot = Quaternion.LookRotation(projectile.direction) * projectile.rotation;
 		projectile.rigidbody.MoveRotation(projRot);
 	}
 
@@ -112,8 +116,8 @@ public class PulseGunController : MonoBehaviour
 		projectile.rigidbody.angularDrag = projectile.angularDrag;
 		projectile.rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
-		projectile.rigidbody.AddRelativeForce(shootForce, ForceMode.Impulse);
-		projectile.rigidbody.AddRelativeTorque(shootTorque, ForceMode.Impulse);
+		projectile.rigidbody.AddForce(shootForce * transform.forward, ForceMode.Impulse);
+		projectile.rigidbody.AddTorque(shootTorque, ForceMode.Impulse);
 
 		continuesReferences.Add(projectile.rigidbody);
 		projectile = null;
