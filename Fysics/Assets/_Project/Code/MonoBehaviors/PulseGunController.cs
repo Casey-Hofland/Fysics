@@ -58,6 +58,10 @@ public class PulseGunController : MonoBehaviour
 		{
 			Shoot();
 		}
+		else if ((Input.GetButtonDown("Fire2"))) 
+		{
+			Drop();
+		}
 	}
 
 	// TODO : Find out which update MoveProjectiles should be in and what collision mode it should have.
@@ -112,6 +116,19 @@ public class PulseGunController : MonoBehaviour
 		projectile.rigidbody.AddRelativeTorque(shootTorque, ForceMode.Impulse);
 
 		continuesReferences.Add(projectile.rigidbody);
+		projectile = null;
+
+		StartCoroutine(Wait());
+	}
+
+	// TODO : Make Objects throwable by dropping them when moving the pulseGun.
+	private void Drop()
+	{
+		if (projectile == null) return;
+
+		projectile.rigidbody.drag = projectile.drag;
+		projectile.rigidbody.angularDrag = projectile.angularDrag;
+
 		projectile = null;
 
 		StartCoroutine(Wait());
