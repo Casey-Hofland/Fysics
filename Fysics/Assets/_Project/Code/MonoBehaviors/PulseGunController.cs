@@ -7,8 +7,9 @@ public class PulseGunController : MonoBehaviour
 	// TODO : Rename some of these fields for clarity
 	[SerializeField] private float tractorBeamDistance = 2f;
 	[SerializeField] private float projectileDistanceFromPlayer = 2f; // TODO : find the distance from the player on track.
-	[SerializeField] private float shootForce = 0;
+	[SerializeField] private float shootForce = 1000f;
 	[SerializeField] private Vector3 shootTorque = Vector3.zero;
+	[SerializeField] private Rigidbody controller = null;
 
 	[Header("ContinuesDynamic References Settings")]
 	[SerializeField] [Range(1, 100)] private float maxVelocity = 30f;
@@ -56,17 +57,27 @@ public class PulseGunController : MonoBehaviour
 		CheckContinuesReferences();
 		if (wait) return;
 
-		if ((projectile == null) && (Input.GetButton("Fire1")))
+		if (projectile == null)
 		{
-			Track();
+			if ((Input.GetButtonDown("Fire1")))
+			{
+				ShootSelf();
+			}
+			else if (Input.GetButton("Fire2"))
+			{
+				Track();
+			}
 		}
-		else if ((Input.GetButtonDown("Fire1")))
+		else
 		{
-			Shoot();
-		}
-		else if ((Input.GetButtonDown("Fire2"))) 
-		{
-			Drop();
+			if ((Input.GetButtonDown("Fire1")))
+			{
+				ShootProjectile();
+			}
+			else if (Input.GetButtonDown("Fire2"))
+			{
+				Drop();
+			}
 		}
 	}
 
@@ -108,7 +119,16 @@ public class PulseGunController : MonoBehaviour
 		}
 	}
 
-	private void Shoot()
+	private void ShootSelf()
+	{
+		if (controller == null) return;
+
+		controller.AddForce(shootForce * transform.forward, ForceMode.Impulse);
+
+		StartCoroutine(Wait());
+	}
+
+	private void ShootProjectile()
 	{
 		if (projectile == null) return;
 
@@ -152,7 +172,12 @@ public class PulseGunController : MonoBehaviour
 		for (int i = continuesReferences.Count - 1; i >= 0; i--)
 		{
 			Rigidbody reference = continuesReferences[i];
-			if (reference.velocity.sqrMagnitude <= sqrMaxVelocity)
+
+			if (reference == null)
+			{
+				continuesReferences.RemoveAt(i);
+			}
+			else if (reference.velocity.sqrMagnitude <= sqrMaxVelocity)
 			{
 				reference.collisionDetectionMode = CollisionDetectionMode.Discrete;
 				continuesReferences.RemoveAt(i);

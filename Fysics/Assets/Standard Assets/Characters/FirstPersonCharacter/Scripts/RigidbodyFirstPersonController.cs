@@ -11,12 +11,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [Serializable]
         public class MovementSettings
         {
-            public float ForwardSpeed = 8.0f;   // Speed when walking forward
-            public float BackwardSpeed = 4.0f;  // Speed when walking backwards
-            public float StrafeSpeed = 4.0f;    // Speed when walking sideways
-            public float RunMultiplier = 2.0f;   // Speed when sprinting
-	        public KeyCode RunKey = KeyCode.LeftShift;
-            public float JumpForce = 30f;
+            public float ForwardSpeed = 40f;   // Speed when walking forward
+            public float BackwardSpeed = 40f;  // Speed when walking backwards
+            public float StrafeSpeed = 40f;    // Speed when walking sideways
+            public float RunMultiplier = 2.0f;  // Speed when sprinting
+			public float AirMultiplier = 0.5f;  // Speed when in the air
+			public float gravityMultiplier = 2.0f;	// How much this object is affected by gravity
+			public float groundDrag = 3.0f;   // Drag when grounded
+
+			public KeyCode RunKey = KeyCode.LeftShift;
+            public float JumpForce = 400f;
             public AnimationCurve SlopeCurveModifier = new AnimationCurve(new Keyframe(-90.0f, 1.0f), new Keyframe(0.0f, 1.0f), new Keyframe(90.0f, 0.0f));
             [HideInInspector] public float CurrentTargetSpeed = 8f;
 
@@ -24,7 +28,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             private bool m_Running;
 #endif
 
-            public void UpdateDesiredTargetSpeed(Vector2 input)
+            public void UpdateDesiredTargetSpeed(Vector2 input, bool grounded)
             {
 	            if (input == Vector2.zero) return;
 				if (input.x > 0 || input.x < 0)
@@ -44,7 +48,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
 					CurrentTargetSpeed = ForwardSpeed;
 				}
 #if !MOBILE_INPUT
-	            if (Input.GetKey(RunKey))
+				if (!grounded)
+				{
+					CurrentTargetSpeed *= AirMultiplier;
+					m_Running = false;
+				}
+				else if (Input.GetKey(RunKey))
 	            {
 		            CurrentTargetSpeed *= RunMultiplier;
 		            m_Running = true;
@@ -160,7 +169,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (m_IsGrounded)
             {
-                m_RigidBody.drag = 5f;
+                m_RigidBody.drag = movementSettings.groundDrag;
 
                 if (m_Jump)
                 {
@@ -168,11 +177,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
                     m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
                     m_Jumping = true;
-                }
-
-                if (!m_Jumping && Mathf.Abs(input.x) < float.Epsilon && Mathf.Abs(input.y) < float.Epsilon && m_RigidBody.velocity.magnitude < 1f)
-                {
-                    m_RigidBody.Sleep();
                 }
             }
             else
@@ -184,6 +188,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 }
             }
             m_Jump = false;
+
+			m_RigidBody.AddForce(Physics.gravity * movementSettings.gravityMultiplier, ForceMode.Acceleration);
         }
 
 
@@ -217,7 +223,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     x = CrossPlatformInputManager.GetAxis("Horizontal"),
                     y = CrossPlatformInputManager.GetAxis("Vertical")
                 };
-			movementSettings.UpdateDesiredTargetSpeed(input);
+			movementSettings.UpdateDesiredTargetSpeed(input, m_IsGrounded);
             return input;
         }
 

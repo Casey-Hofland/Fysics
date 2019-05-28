@@ -20,15 +20,15 @@ MonoBehaviour:
       data2: 4539628424389459968
   m_RenderingPathDefaultBakedOrCustomReflectionFrameSettings:
     bitDatas:
-      data1: 64881914049309
+      data1: 64881914049311
       data2: 4539628424389459968
   m_RenderingPathDefaultRealtimeReflectionFrameSettings:
     bitDatas:
-      data1: 69279803252509
+      data1: 69279803252511
       data2: 4539628424389459968
   m_RenderPipelineSettings:
     supportShadowMask: 1
-    supportSSR: 0
+    supportSSR: 1
     supportSSAO: 1
     supportSubsurfaceScattering: 1
     increaseSssSampleCount: 0
@@ -57,8 +57,8 @@ MonoBehaviour:
       planarReflectionTextureSize: 1024
       reflectionProbeCacheSize: 64
       reflectionCubemapSize: 256
-      reflectionCacheCompressed: 0
-      planarReflectionCacheCompressed: 0
+      reflectionCacheCompressed: 1
+      planarReflectionCacheCompressed: 1
       skyReflectionSize: 256
       skyLightingOverrideLayerMask:
         serializedVersion: 2
@@ -90,7 +90,7 @@ MonoBehaviour:
       m_LutSize: 32
       lutFormat: 48
     dynamicResolutionSettings:
-      enabled: 0
+      enabled: 1
       maxPercentage: 100
       minPercentage: 100
       dynResType: 0
