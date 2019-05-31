@@ -189,7 +189,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             m_Jump = false;
 
-			m_RigidBody.AddForce(Physics.gravity * movementSettings.gravityMultiplier, ForceMode.Acceleration);
+			m_RigidBody.AddForce(Physics.gravity * (movementSettings.gravityMultiplier - 1), ForceMode.Acceleration);
         }
 
 
