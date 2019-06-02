@@ -205,9 +205,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects:
-  - {fileID: 5601827687184878708, guid: 40ab6510ff70b9b42bc9adaf01c4d6f7, type: 3}
-  - {fileID: 6367584533599363092, guid: 046398574cd10134c9a5b9d6321af5ba, type: 3}
-  - {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88, type: 3}
+  - {fileID: 6804334281940606173, guid: 72febcdef9abd5e40ad69bb401999d5a, type: 3}
+  - {fileID: 343873421337912214, guid: 570de0a8b857fce41aba4d9ef2c37907, type: 3}
+  - {fileID: 8507938854251960529, guid: 01c41499deb26a941b8275491532b3fd, type: 3}
   timeRange: {x: 15, y: 30}
   spawnPoint: {fileID: 454936959}
   spawnVelocity: 100
@@ -384,9 +384,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects:
-  - {fileID: 5601827687184878708, guid: 40ab6510ff70b9b42bc9adaf01c4d6f7, type: 3}
-  - {fileID: 6367584533599363092, guid: 046398574cd10134c9a5b9d6321af5ba, type: 3}
-  - {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88, type: 3}
+  - {fileID: 6804334281940606173, guid: 72febcdef9abd5e40ad69bb401999d5a, type: 3}
+  - {fileID: 343873421337912214, guid: 570de0a8b857fce41aba4d9ef2c37907, type: 3}
+  - {fileID: 8507938854251960529, guid: 01c41499deb26a941b8275491532b3fd, type: 3}
   timeRange: {x: 15, y: 30}
   spawnPoint: {fileID: 1185215354}
   spawnVelocity: 100
@@ -1211,100 +1211,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2100, y: 100, z: 2100}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &1115953446
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_Name
-      value: Sphere
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7932805309839437623, guid: ff0c8e786d530204b97e861d84cabb88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ff0c8e786d530204b97e861d84cabb88, type: 3}
---- !u!1 &1115953447 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88,
-    type: 3}
-  m_PrefabInstance: {fileID: 1115953446}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1115953448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115953447}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 791b9b2334fb58f46b0a007cdf17d631, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  force: {x: 1000, y: 0, z: 0}
-  torque: {x: 0, y: 0, z: 0}
 --- !u!1 &1140442423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,9 +1259,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects:
-  - {fileID: 5601827687184878708, guid: 40ab6510ff70b9b42bc9adaf01c4d6f7, type: 3}
-  - {fileID: 6367584533599363092, guid: 046398574cd10134c9a5b9d6321af5ba, type: 3}
-  - {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88, type: 3}
+  - {fileID: 6804334281940606173, guid: 72febcdef9abd5e40ad69bb401999d5a, type: 3}
+  - {fileID: 343873421337912214, guid: 570de0a8b857fce41aba4d9ef2c37907, type: 3}
+  - {fileID: 8507938854251960529, guid: 01c41499deb26a941b8275491532b3fd, type: 3}
   timeRange: {x: 15, y: 30}
   spawnPoint: {fileID: 2013827997}
   spawnVelocity: 100
@@ -1908,9 +1814,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects:
-  - {fileID: 5601827687184878708, guid: 40ab6510ff70b9b42bc9adaf01c4d6f7, type: 3}
-  - {fileID: 6367584533599363092, guid: 046398574cd10134c9a5b9d6321af5ba, type: 3}
-  - {fileID: 7932805309839437628, guid: ff0c8e786d530204b97e861d84cabb88, type: 3}
+  - {fileID: 6804334281940606173, guid: 72febcdef9abd5e40ad69bb401999d5a, type: 3}
+  - {fileID: 343873421337912214, guid: 570de0a8b857fce41aba4d9ef2c37907, type: 3}
+  - {fileID: 8507938854251960529, guid: 01c41499deb26a941b8275491532b3fd, type: 3}
   timeRange: {x: 15, y: 30}
   spawnPoint: {fileID: 2096761321}
   spawnVelocity: 100
