@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 3015385890322698902}
   - component: {fileID: 3144616676087550998}
   - component: {fileID: 5992978081527419201}
+  - component: {fileID: 5827974684375817213}
+  - component: {fileID: 3975320909254290845}
+  - component: {fileID: 8660188282996368770}
   m_Layer: 9
   m_Name: Character
   m_TagString: Untagged
@@ -217,6 +220,67 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &5827974684375817213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5283039590365408494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485e4226f4991f348a18a77f0cfb34fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkSingletons:
+  - {fileID: 3144616676087550998}
+  - {fileID: 6828456842684067257}
+  - {fileID: 6828456842681774489}
+  - {fileID: 6828456842695776895}
+  - {fileID: 6828456841355172910}
+  - {fileID: 733250240}
+--- !u!114 &3975320909254290845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5283039590365408494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d6c522af31447398568cc65334232b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 10
+  m_InterpolateMovement: 1
+--- !u!114 &8660188282996368770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5283039590365408494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4fc1de7aae047a4bf138b9498c9b37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 6828456842685608889}
+  m_ChildIndex: 0
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_MovementThreshold: 0.001
+  m_InterpolateRotation: 0.3
+  m_InterpolateMovement: 0
 --- !u!1 &6828456842685575069
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,7 +297,7 @@ GameObject:
   - component: {fileID: 6828456841355172910}
   - component: {fileID: 733250240}
   m_Layer: 12
-  m_Name: MainCamera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
