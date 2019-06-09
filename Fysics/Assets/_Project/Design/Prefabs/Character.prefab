@@ -368,7 +368,7 @@ MonoBehaviour:
   projectileDistanceFromPlayer: 2
   shootForce: 1000
   shootTorque: {x: 0, y: 0, z: 0}
-  controller: {fileID: 0}
+  controller: {fileID: 3015385890322698902}
   maxVelocity: 30
   maxCapacity: 24
 --- !u!114 &733250240
