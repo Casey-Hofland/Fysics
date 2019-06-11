@@ -80,7 +80,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             public float groundCheckDistance = 0.01f; // distance for checking if the controller is grounded ( 0.01f seems to work best for this )
             public float stickToGroundHelperDistance = 0.5f; // stops the character
             public float slowDownRate = 20f; // rate at which the controller comes to a stop when there is no input
-            public bool airControl; // can the user control the direction that is being moved in the air
+			public float m_RunCycleLegOffset = 0.2f; //specific to the character in sample assets, will need to be modified to work with others
+			public float m_AnimSpeedMultiplier = 1f;
+			public bool airControl; // can the user control the direction that is being moved in the air
             [Tooltip("set it to 0.1 or more if you get stuck in wall")]
             public float shellOffset; //reduce the radius by that ratio to avoid getting stuck in wall (a value of 0.1f is nice)
         }
@@ -93,13 +95,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 
         private Rigidbody m_RigidBody;
+		private Animator m_Animator;
         private CapsuleCollider m_Capsule;
         private float m_YRotation;
         private Vector3 m_GroundContactNormal;
         private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
+		const float k_Half = 0.5f;
 
 
-        public Vector3 Velocity
+		public Vector3 Velocity
         {
             get { return m_RigidBody.velocity; }
         }
@@ -130,12 +134,51 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Start()
         {
             m_RigidBody = GetComponent<Rigidbody>();
+			m_Animator = GetComponent<Animator>();
             m_Capsule = GetComponent<CapsuleCollider>();
             mouseLook.Init (transform, cam.transform);
         }
 
 
-        private void Update()
+		void UpdateAnimator(Vector3 move)
+		{
+			// update the animator parameters
+			m_Animator.SetFloat("Forward", m_RigidBody.velocity.magnitude, 0.1f, Time.deltaTime);
+			//m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
+			//m_Animator.SetBool("Crouch", m_Crouching);
+			m_Animator.SetBool("OnGround", Grounded);
+			if (!m_IsGrounded)
+			{
+				m_Animator.SetFloat("Jump", m_RigidBody.velocity.y);
+			}
+
+			// calculate which leg is behind, so as to leave that leg trailing in the jump animation
+			// (This code is reliant on the specific run cycle offset in our animations,
+			// and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
+			float runCycle =
+				Mathf.Repeat(
+					m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + advancedSettings.m_RunCycleLegOffset, 1);
+			float jumpLeg = (runCycle < k_Half ? 1 : -1) * m_RigidBody.velocity.magnitude;
+			if (m_IsGrounded)
+			{
+				m_Animator.SetFloat("JumpLeg", jumpLeg);
+			}
+
+			// the anim speed multiplier allows the overall speed of walking/running to be tweaked in the inspector,
+			// which affects the movement speed because of the root motion.
+			if (m_IsGrounded && move.magnitude > 0)
+			{
+				m_Animator.speed = advancedSettings.m_AnimSpeedMultiplier;
+			}
+			else
+			{
+				// don't use that while airborne
+				m_Animator.speed = 1;
+			}
+		}
+
+
+		private void Update()
         {
             RotateView();
 

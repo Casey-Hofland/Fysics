@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,55 +7,112 @@ public class PulseGunController : MonoBehaviour
 {
 	// TODO : Rename some of these fields for clarity
 	[SerializeField] private float tractorBeamDistance = 2f;
-	[SerializeField] private float projectileDistanceFromPlayer = 2f; // TODO : find the distance from the player on track.
 	[SerializeField] private float shootForce = 1000f;
 	[SerializeField] private Vector3 shootTorque = Vector3.zero;
 	[SerializeField] private Rigidbody controller = null;
 
-	[Header("ContinuesDynamic References Settings")]
-	[SerializeField] [Range(1, 100)] private float maxVelocity = 30f;
-	[SerializeField] [Range(0, 128)] private int maxCapacity = 24;
-	//[SerializeField] [Range(0, 300f)] private float maxTime = 60f;
+	[SerializeField] private ProjectileSettings projectileSettings;
 
 	private Ray forwardRay { get { return new Ray(transform.position, transform.forward); } }
-	private float sqrMaxVelocity;
-	private List<Rigidbody> continuesReferences = new List<Rigidbody>();
 	private Projectile projectile = null;
 
 	private bool wait = false; // Used for testing waiting between shooting and tracking
 	private float waitDelay = 0.5f;
 
+	[Serializable]
+	private class ProjectileSettings
+	{
+		[SerializeField] public float distFromPlayer = 2f; // TODO : find the distance from the player on track.
+		[Range(0f, 255f)] public float transparency = 200f;
+		[Range(0f, 1f)] public float blur = 0.3f;
+
+		[HideInInspector] public Transform transform;
+	}
+
 	private class Projectile
 	{
 		public readonly Rigidbody rigidbody;
-		public readonly Quaternion rotation;
-		public readonly float drag;
-		public readonly float angularDrag;
+		private readonly Quaternion rotation;
+		private readonly float distFromPlayer;
+		private readonly float drag;
+		private readonly float angularDrag;
+		private readonly RigidbodyInterpolation interpolation;
 
 		private readonly Transform gunTransform;
+		private readonly Renderer renderer;
+		private Color materialColor;
+
+		private const string BASECOLORNAME = "_BaseColor";
+		private const string DISTORTIONNAME = "_DistortionEnable";
+		private const string DISTORTIONTESTNAME = "_DistortionDepthTest";
+		private const string DISTORTIONBLURNAME = "_DistortionBlurRemapMin";
 
 		public Vector3 direction { get { return (rigidbody.position - gunTransform.position); } }
 
-		public Projectile(Transform gunTransform, Rigidbody rigidbody)
+		public Projectile(Rigidbody rigidbody, ProjectileSettings projectileSettings)
 		{
 			this.rigidbody = rigidbody;
-			this.rotation = Quaternion.Inverse(gunTransform.rotation) * rigidbody.transform.rotation;
-			this.drag = rigidbody.drag;
-			this.angularDrag = rigidbody.angularDrag;
+			gunTransform = projectileSettings.transform;
+			distFromPlayer = projectileSettings.distFromPlayer;
 
-			this.gunTransform = gunTransform;
+			rotation = Quaternion.Inverse(gunTransform.rotation) * rigidbody.transform.rotation;
+			drag = rigidbody.drag;
+			angularDrag = rigidbody.angularDrag;
+			interpolation = rigidbody.interpolation;
+
+			renderer = rigidbody.gameObject.GetComponent<Renderer>();
+			materialColor = renderer.material.color;
+
+			rigidbody.drag = Mathf.Infinity;
+			rigidbody.angularDrag = Mathf.Infinity;
+			//rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+			materialColor.a = projectileSettings.transparency / 255f;
+
+			renderer.material.SetFloat(DISTORTIONNAME, 1f);
+			renderer.material.SetFloat(DISTORTIONTESTNAME, 1f);
+			renderer.material.SetFloat(DISTORTIONBLURNAME, projectileSettings.blur);
+			renderer.material.SetColor(BASECOLORNAME, materialColor);
+		}
+
+		// TODO : Track projectiles across surfaces. Currently, if the player has a projectile, looks at a surface and turns, the moveposition is ignored because of the raycast.
+		// TODO : Correct projectile collision detection. Currently, the object phases through walls if held close enough.
+			// ?Solution: Raycast to desired position / rotation before moving
+		public void Move()
+		{
+			//rigidbody.GetComponent<DynamicCollisionDetection>().OverrideFrame(CollisionDetectionMode.Continuous);
+
+			Ray forwardDir = new Ray(gunTransform.position, gunTransform.forward);
+
+			if (!Physics.Raycast(forwardDir, distFromPlayer, LayerMask.GetMask("Surface"), QueryTriggerInteraction.Ignore))
+			{
+				Vector3 newPosition = gunTransform.position + gunTransform.forward * distFromPlayer;
+				rigidbody.MovePosition(newPosition);
+			}
+
+			Quaternion projRot = Quaternion.LookRotation(direction) * rotation;
+			//rigidbody.MoveRotation(projRot);
+			rigidbody.MoveRotation(Quaternion.Euler(Vector3.up));
+		}
+
+		public void Reset()
+		{
+			rigidbody.drag = drag;
+			rigidbody.angularDrag = angularDrag;
+			rigidbody.interpolation = interpolation;
+			materialColor.a = 1f;
+			renderer.material.SetColor(BASECOLORNAME, materialColor);
+			renderer.material.SetFloat(DISTORTIONBLURNAME, 0f);
 		}
 	}
 
 	private void Awake()
 	{
 		Cursor.lockState = CursorLockMode.Locked;
-		sqrMaxVelocity = maxVelocity * maxVelocity;
+		projectileSettings.transform = transform;
 	}
 
 	private void Update()
 	{
-		CheckContinuesReferences();
 		if (wait) return;
 
 		if (projectile == null)
@@ -84,22 +142,8 @@ public class PulseGunController : MonoBehaviour
 	// TODO : Find out which update MoveProjectiles should be in and what collision mode it should have.
 	private void FixedUpdate()
 	{
-		MoveProjectile();
-	}
-
-	// TODO : Track projectiles across surfaces. Currently, if the player has a projectile, looks at a surface and turns, the moveposition is ignored because of the raycast.
-	private void MoveProjectile()
-	{
 		if (projectile == null) return;
-
-		if (!Physics.Raycast(forwardRay, projectileDistanceFromPlayer, LayerMask.GetMask("Surface"), QueryTriggerInteraction.Ignore))
-		{
-			Vector3 projPos = transform.position + transform.forward * projectileDistanceFromPlayer;
-			projectile.rigidbody.MovePosition(projPos);
-		}
-
-		Quaternion projRot = Quaternion.LookRotation(projectile.direction) * projectile.rotation;
-		projectile.rigidbody.MoveRotation(projRot);
+		projectile.Move();
 	}
 
 	private void Track()
@@ -110,10 +154,7 @@ public class PulseGunController : MonoBehaviour
 		{
 			Rigidbody rigidbody = hitInfo.transform.GetComponent<Rigidbody>();
 
-			projectile = new Projectile(transform, rigidbody);
-
-			projectile.rigidbody.drag = Mathf.Infinity;
-			projectile.rigidbody.angularDrag = Mathf.Infinity;
+			projectile = new Projectile(rigidbody, projectileSettings);
 
 			StartCoroutine(Wait());
 		}
@@ -132,14 +173,14 @@ public class PulseGunController : MonoBehaviour
 	{
 		if (projectile == null) return;
 
-		projectile.rigidbody.drag = projectile.drag;
-		projectile.rigidbody.angularDrag = projectile.angularDrag;
-		projectile.rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+		projectile.Reset();
 
-		projectile.rigidbody.AddForce(shootForce * transform.forward, ForceMode.Impulse);
-		projectile.rigidbody.AddTorque(shootTorque, ForceMode.Impulse);
+		//projectile.rigidbody.AddForce(shootForce * transform.forward, ForceMode.Impulse);
+		//projectile.rigidbody.AddTorque(shootTorque, ForceMode.Impulse);
 
-		continuesReferences.Add(projectile.rigidbody);
+		projectile.rigidbody.velocity = transform.forward * shootForce / projectile.rigidbody.mass;
+		projectile.rigidbody.velocity = shootTorque / projectile.rigidbody.mass;
+
 		projectile = null;
 
 		StartCoroutine(Wait());
@@ -150,39 +191,10 @@ public class PulseGunController : MonoBehaviour
 	{
 		if (projectile == null) return;
 
-		projectile.rigidbody.drag = projectile.drag;
-		projectile.rigidbody.angularDrag = projectile.angularDrag;
-
+		projectile.Reset();
 		projectile = null;
 
 		StartCoroutine(Wait());
-	}
-
-	// TODO : Add check on how much time has passed since the element was added
-	private void CheckContinuesReferences()
-	{
-		int overflow = continuesReferences.Count - maxCapacity;
-		for (int i = 0; i < overflow; i++)
-		{
-			Rigidbody reference = continuesReferences[0];
-			reference.collisionDetectionMode = CollisionDetectionMode.Discrete;
-			continuesReferences.RemoveAt(0);
-		}
-
-		for (int i = continuesReferences.Count - 1; i >= 0; i--)
-		{
-			Rigidbody reference = continuesReferences[i];
-
-			if (reference == null)
-			{
-				continuesReferences.RemoveAt(i);
-			}
-			else if (reference.velocity.sqrMagnitude <= sqrMaxVelocity)
-			{
-				reference.collisionDetectionMode = CollisionDetectionMode.Discrete;
-				continuesReferences.RemoveAt(i);
-			}
-		}
 	}
 
 	// TODO : Rename the "Wait" function to something more appropriate, or switch to a state-driven-machine with delays in between statechanges!

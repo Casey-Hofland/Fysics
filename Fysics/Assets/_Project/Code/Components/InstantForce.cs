@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
+using UnityEditor;
 
+[DisallowMultipleComponent]
+[CanEditMultipleObjects]
+[RequireComponent(typeof(Rigidbody))]
 public class InstantForce : MonoBehaviour
 {
 	[SerializeField] private Vector3 force = Vector3.zero;
@@ -14,8 +18,7 @@ public class InstantForce : MonoBehaviour
 
 	private void Start()
 	{
-		rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-		rigidbody.AddRelativeForce(force, ForceMode.Impulse);
-		rigidbody.AddRelativeTorque(torque, ForceMode.Impulse);
+		rigidbody.velocity = force / rigidbody.mass;
+		rigidbody.angularVelocity = torque / rigidbody.mass;
 	}
 }
