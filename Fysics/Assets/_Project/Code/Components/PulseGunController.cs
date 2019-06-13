@@ -90,8 +90,7 @@ public class PulseGunController : MonoBehaviour
 			}
 
 			Quaternion projRot = Quaternion.LookRotation(direction) * rotation;
-			//rigidbody.MoveRotation(projRot);
-			rigidbody.MoveRotation(Quaternion.Euler(Vector3.up));
+			rigidbody.MoveRotation(projRot);
 		}
 
 		public void Reset()
@@ -102,6 +101,8 @@ public class PulseGunController : MonoBehaviour
 			materialColor.a = 1f;
 			renderer.material.SetColor(BASECOLORNAME, materialColor);
 			renderer.material.SetFloat(DISTORTIONBLURNAME, 0f);
+
+			rigidbody.GetComponent<DynamicCollisionDetection>().OverrideFrame(CollisionDetectionMode.ContinuousDynamic);
 		}
 	}
 
@@ -173,13 +174,9 @@ public class PulseGunController : MonoBehaviour
 	{
 		if (projectile == null) return;
 
+		projectile.rigidbody.AddForce(shootForce * transform.forward, ForceMode.Impulse);
+		projectile.rigidbody.AddTorque(shootTorque, ForceMode.Impulse);
 		projectile.Reset();
-
-		//projectile.rigidbody.AddForce(shootForce * transform.forward, ForceMode.Impulse);
-		//projectile.rigidbody.AddTorque(shootTorque, ForceMode.Impulse);
-
-		projectile.rigidbody.velocity = transform.forward * shootForce / projectile.rigidbody.mass;
-		projectile.rigidbody.velocity = shootTorque / projectile.rigidbody.mass;
 
 		projectile = null;
 

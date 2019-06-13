@@ -1612,7 +1612,7 @@ PrefabInstance:
     - target: {fileID: 5283039590365408494, guid: 18f0c60ed02372042bc4f2d05c842704,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5281648294066873796, guid: 18f0c60ed02372042bc4f2d05c842704,
         type: 3}
@@ -7495,7 +7495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1277556042
 Transform:
   m_ObjectHideFlags: 0
@@ -8571,6 +8571,9 @@ MonoBehaviour:
     BackwardSpeed: 40
     StrafeSpeed: 40
     RunMultiplier: 2
+    AirMultiplier: 0.5
+    gravityMultiplier: 2
+    groundDrag: 3
     RunKey: 304
     JumpForce: 600
     SlopeCurveModifier:
@@ -8620,6 +8623,8 @@ MonoBehaviour:
     groundCheckDistance: 0.1
     stickToGroundHelperDistance: 0
     slowDownRate: 20
+    m_RunCycleLegOffset: 0.2
+    m_AnimSpeedMultiplier: 1
     airControl: 1
     shellOffset: 0
 --- !u!136 &1425880130
@@ -9167,7 +9172,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &1571902522
 Animator:
   serializedVersion: 3
@@ -11234,11 +11239,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6804334281940606174, guid: 72febcdef9abd5e40ad69bb401999d5a,
-        type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72febcdef9abd5e40ad69bb401999d5a, type: 3}
