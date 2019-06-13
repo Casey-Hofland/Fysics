@@ -181,6 +181,8 @@ MonoBehaviour:
     groundCheckDistance: 0.1
     stickToGroundHelperDistance: 0
     slowDownRate: 20
+    m_RunCycleLegOffset: 0.2
+    m_AnimSpeedMultiplier: 1
     airControl: 1
     shellOffset: 0
 --- !u!1 &6828456842685575069
@@ -365,12 +367,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tractorBeamDistance: 2
-  projectileDistanceFromPlayer: 2
   shootForce: 1000
   shootTorque: {x: 0, y: 0, z: 0}
   controller: {fileID: 3015385890322698902}
-  maxVelocity: 30
-  maxCapacity: 24
+  projectileSettings:
+    distFromPlayer: 2
+    transparency: 200
+    blur: 0.3
+    transform: {fileID: 0}
 --- !u!114 &733250240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,7 +394,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   volumeAnchorOverride: {fileID: 0}
-  antialiasing: 1
+  antialiasing: 3
   SMAAQuality: 2
   dithering: 0
   stopNaNs: 0
