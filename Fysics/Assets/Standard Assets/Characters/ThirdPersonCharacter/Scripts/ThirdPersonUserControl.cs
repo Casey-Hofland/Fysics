@@ -48,13 +48,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             // read inputs
             float h = CrossPlatformInputManager.GetAxis("Horizontal");
             float v = CrossPlatformInputManager.GetAxis("Vertical");
-			float x = CrossPlatformInputManager.GetAxis("Mouse X");
-			bool crouch = Input.GetKey(KeyCode.C);
+            bool crouch = Input.GetKey(KeyCode.C);
 
-			// turn the character
-			transform.Rotate(Vector3.up * x);
-
-			// calculate move direction to pass to character
+            // calculate move direction to pass to character
             if (m_Cam != null)
             {
                 // calculate camera relative direction to move:
@@ -66,17 +62,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 // we use world-relative directions in the case of no main camera
                 m_Move = v*Vector3.forward + h*Vector3.right;
             }
-
-			// calculate relative move direction to pass to character
-			//m_Move = v * transform.forward + h * transform.right;
-
 #if !MOBILE_INPUT
 			// walk speed multiplier
-			if (Input.GetKey(KeyCode.LeftShift)) m_Move *= 0.5f;
+	        if (Input.GetKey(KeyCode.LeftShift)) m_Move *= 0.5f;
 #endif
 
-			// pass all parameters to the character control script
-			m_Character.Move(m_Move, crouch, m_Jump);
+            // pass all parameters to the character control script
+            m_Character.Move(m_Move, crouch, m_Jump);
             m_Jump = false;
         }
     }
