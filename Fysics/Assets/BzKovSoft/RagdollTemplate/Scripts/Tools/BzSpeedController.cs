@@ -22,6 +22,9 @@ Press 4 - 1/10";
 		{
 			_fixedDeltaTime = Time.fixedDeltaTime;
 			_timeScale = Time.timeScale;
+
+			Time.fixedDeltaTime = _fixedDeltaTime / 10;
+			Time.timeScale = _timeScale / 10;
 		}
 
 		void Update()
