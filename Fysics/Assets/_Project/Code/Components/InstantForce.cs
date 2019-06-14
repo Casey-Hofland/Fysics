@@ -18,7 +18,12 @@ public class InstantForce : MonoBehaviour
 
 	private void Start()
 	{
+		rigidbody.AddRelativeForce(force, ForceMode.Impulse);
+		rigidbody.AddRelativeTorque(torque, ForceMode.Impulse);
+
+		/*
 		rigidbody.velocity = force / rigidbody.mass;
 		rigidbody.angularVelocity = torque / rigidbody.mass;
+		*/
 	}
 }
