@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 
 namespace BzKovSoft.RagdollTemplate.Scripts.Charachter
 {
@@ -386,7 +387,20 @@ namespace BzKovSoft.RagdollTemplate.Scripts.Charachter
 					rigid.RigidBody.isKinematic = false;
 					StartCoroutine(FixTransformAndEnableJoint(rigid));
 					rigid.RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+					//rigid.RigidBody.gameObject.layer = LayerMask.NameToLayer("Default");
 				}
+				else
+				{
+					rigid.RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+					rigid.RigidBody.isKinematic = true;
+					//rigid.RigidBody.gameObject.layer = LayerMask.NameToLayer("Bones");
+				}
+			}
+
+			string layer = (activate) ? "Default" : "Bone";
+			foreach (var collider in GetComponentsInChildren<Collider>(true).Skip(1))
+			{
+				collider.gameObject.layer = LayerMask.NameToLayer(layer);
 			}
 
 			//if (activate)
