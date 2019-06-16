@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Project/Scenes/MainMenu.unity
+    guid: 0d17e68c86136c74aadd2de11b85904c
+  - enabled: 1
     path: Assets/_Project/Scenes/Level01.unity
     guid: c39404e5726e4634fb360dd7043b1275
+  - enabled: 1
+    path: Assets/BzKovSoft/RagdollTemplate/SampleScenes/ragdollFull_Rigidbody.unity
+    guid: ce5a92e15043a6548a1d7250b8054f91
   m_configObjects: {}

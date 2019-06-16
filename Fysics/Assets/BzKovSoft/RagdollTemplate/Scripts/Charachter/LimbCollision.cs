@@ -18,7 +18,6 @@ namespace BzKovSoft.RagdollTemplate.Scripts.Charachter
 		private void Start()
 		{
 			rootRigidbody = transform.root.GetChild(1).GetComponent<Rigidbody>();
-			Debug.Log(rootRigidbody.name);
 		}
 
 		private void OnCollisionEnter(Collision collision)

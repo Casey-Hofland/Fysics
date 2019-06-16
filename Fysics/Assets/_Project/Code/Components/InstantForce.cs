@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 [DisallowMultipleComponent]
-[CanEditMultipleObjects]
 [RequireComponent(typeof(Rigidbody))]
 public class InstantForce : MonoBehaviour
 {
