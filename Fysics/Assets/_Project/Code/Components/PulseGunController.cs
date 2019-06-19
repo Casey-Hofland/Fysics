@@ -102,7 +102,7 @@ public class PulseGunController : MonoBehaviour
 			renderer.material.SetColor(BASECOLORNAME, materialColor);
 			renderer.material.SetFloat(DISTORTIONBLURNAME, 0f);
 
-			rigidbody.GetComponent<DynamicCollisionDetection>().OverrideFrame(CollisionDetectionMode.ContinuousDynamic);
+			//rigidbody.GetComponent<DynamicCollisionDetection>().OverrideFrame(CollisionDetectionMode.ContinuousDynamic);
 		}
 	}
 

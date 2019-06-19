@@ -4,14 +4,14 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
-public class DynamicCollisionDetection : MonoBehaviour
+public class DynamicCollisionDetection2 : MonoBehaviour
 {
 	private readonly float continuousDynamicSqrMagnitude = Mathf.Pow(30f, 2);
 	private readonly float continuousSqrMagnitude = Mathf.Pow(5f, 2);
 
 	private Rigidbody rigidbody;
-	private bool firstFrame;
 	private bool lastIsSleeping;
+	private Vector3 lastVelocity = Vector3.zero;
 
 	private void Awake()
 	{
@@ -21,8 +21,23 @@ public class DynamicCollisionDetection : MonoBehaviour
 	private void OnEnable()
 	{
 		rigidbody.Sleep();
-		firstFrame = true;
-		lastIsSleeping = true;
+		lastIsSleeping = false;
+	}
+
+	private void FixedUpdate()
+	{
+		bool isSleeping = rigidbody.IsSleeping();
+
+		if (!isSleeping)
+		{
+			rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+		}
+		else if (!lastIsSleeping)
+		{
+			rigidbody.WakeUp();
+			rigidbody.AddForce(lastVelocity, ForceMode.VelocityChange);
+			StartCoroutine(UpdateCollisionDetectionMode());
+		}
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -30,30 +45,14 @@ public class DynamicCollisionDetection : MonoBehaviour
 		rigidbody.WakeUp();
 	}
 
-	private void FixedUpdate()
+	IEnumerator UpdateCollisionDetectionMode()
 	{
-		bool isSleeping = rigidbody.IsSleeping();
-		if (firstFrame && isSleeping)
-		{
-			firstFrame = false;
-			rigidbody.WakeUp();
-			isSleeping = false;
-			lastIsSleeping = isSleeping;
-		}
+		yield return new WaitForFixedUpdate();
 
-		if (!isSleeping)
-		{
-			if (lastIsSleeping != isSleeping)
-			{
-				rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-			}
-			else
-			{
-				StartCoroutine(UpdateCollisionDetectionMode());
-			}
-		}
-
-		lastIsSleeping = isSleeping;
+		rigidbody.collisionDetectionMode = DynamicCollisionDetectionMode();
+		lastIsSleeping = rigidbody.IsSleeping();
+		lastVelocity = rigidbody.velocity;
+		rigidbody.Sleep();
 	}
 
 	private CollisionDetectionMode DynamicCollisionDetectionMode()
@@ -67,12 +66,5 @@ public class DynamicCollisionDetection : MonoBehaviour
 			default:
 				return CollisionDetectionMode.Discrete;
 		}
-	}
-
-	IEnumerator UpdateCollisionDetectionMode()
-	{
-		yield return new WaitForFixedUpdate();
-
-		rigidbody.collisionDetectionMode = DynamicCollisionDetectionMode();
 	}
 }
