@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
-public class DynamicCollisionDetection : MonoBehaviour
+public class __DynamicCollisionDetection : MonoBehaviour
 {
 	private readonly float continuousDynamicSqrMagnitude = Mathf.Pow(30f, 2);
 	private readonly float continuousSqrMagnitude = Mathf.Pow(5f, 2);

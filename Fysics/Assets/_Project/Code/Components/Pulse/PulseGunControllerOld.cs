@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PulseGunController : MonoBehaviour
+public class PulseGunControllerOld : MonoBehaviour
 {
 	// TODO : Rename some of these fields for clarity
 	[SerializeField] private float tractorBeamDistance = 2f;

@@ -177,22 +177,24 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			}
 		}
 
+		private Vector2 input;
 
 		private void Update()
         {
             RotateView();
 
-            if (CrossPlatformInputManager.GetButtonDown("Jump") && !m_Jump)
+			input = GetInput();
+
+			if (CrossPlatformInputManager.GetButtonDown("Jump") && !m_Jump)
             {
                 m_Jump = true;
             }
-        }
+		}
 
 
-        private void FixedUpdate()
+		private void FixedUpdate()
         {
             GroundCheck();
-            Vector2 input = GetInput();
 
             if ((Mathf.Abs(input.x) > float.Epsilon || Mathf.Abs(input.y) > float.Epsilon) && (advancedSettings.airControl || m_IsGrounded))
             {
